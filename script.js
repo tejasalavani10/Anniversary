@@ -1,17 +1,18 @@
+function getDenmarkNow() {
+    // Get the current time in Denmark as a Date object
+    const now = new Date();
+    const denmarkTimeString = now.toLocaleString('en-US', { timeZone: 'Europe/Copenhagen' });
+    return new Date(denmarkTimeString);
+}
 
 function updateCountdown() {
-    const currentDate = new Date();
-    const nextAnniversary = new Date(Date.UTC(2025, 5, 2, 0, 0, 0));
-    
-    const isDST = isDaylightSavingTime(nextAnniversary);
-    const denmarkOffset = isDST ? 2 : 1; 
-    
-    nextAnniversary.setUTCHours(nextAnniversary.getUTCHours() + denmarkOffset);
-    
-    const currentTime = currentDate.getTime();
-    const anniversaryTime = nextAnniversary.getTime();
-    const timeRemaining = anniversaryTime - currentTime;
-    
+    // Target date: June 2, 2025, 00:00:00 in Denmark time
+    const targetDate = new Date('2025-06-02T00:00:00');
+    // Get current time in Denmark
+    const now = getDenmarkNow();
+    // Calculate the difference in milliseconds
+    const timeRemaining = targetDate.getTime() - now.getTime();
+
     if (timeRemaining < 0) {
         document.getElementById('days').innerHTML = '00';
         document.getElementById('hours').innerHTML = '00';
@@ -19,27 +20,16 @@ function updateCountdown() {
         document.getElementById('seconds').innerHTML = '00';
         return;
     }
-    
+
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-    
+
     document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
     document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
     document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
     document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
-}
-
-function isDaylightSavingTime(date) {
-    const year = date.getUTCFullYear();
-    
-    const marchDate = new Date(Date.UTC(year, 2, 31));
-    marchDate.setUTCDate(31 - marchDate.getUTCDay()); 
-    const octoberDate = new Date(Date.UTC(year, 9, 31)); 
-    octoberDate.setUTCDate(31 - octoberDate.getUTCDay());
-    
-    return date >= marchDate && date < octoberDate;
 }
 
 setInterval(updateCountdown, 1000);
