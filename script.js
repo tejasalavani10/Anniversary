@@ -5,9 +5,28 @@ function getDenmarkNow() {
     return new Date(denmarkTimeString);
 }
 
+function getNextAnniversaryDate() {
+    // Always return the next June 2 at 00:00:00 in Denmark time
+    const now = getDenmarkNow();
+    const currentYear = now.getFullYear();
+    // Create June 2 of the current year in Denmark time
+    let anniversary = new Date(`${currentYear}-06-02T00:00:00`);
+    // Adjust for Denmark time zone
+    const anniversaryTimeString = anniversary.toLocaleString('en-US', { timeZone: 'Europe/Copenhagen' });
+    anniversary = new Date(anniversaryTimeString);
+    // If today is June 2 or later, use next year
+    if (now >= anniversary) {
+        let nextYearAnniversary = new Date(`${currentYear + 1}-06-02T00:00:00`);
+        const nextYearAnniversaryTimeString = nextYearAnniversary.toLocaleString('en-US', { timeZone: 'Europe/Copenhagen' });
+        nextYearAnniversary = new Date(nextYearAnniversaryTimeString);
+        return nextYearAnniversary;
+    }
+    return anniversary;
+}
+
 function updateCountdown() {
-    // Target date: June 2, 2025, 00:00:00 in Denmark time
-    const targetDate = new Date('2025-06-02T00:00:00');
+    // Target date: Next anniversary in Denmark time
+    const targetDate = getNextAnniversaryDate();
     // Get current time in Denmark
     const now = getDenmarkNow();
     // Calculate the difference in milliseconds
